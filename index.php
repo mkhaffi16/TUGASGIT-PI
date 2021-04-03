@@ -1,3 +1,104 @@
+<?php
+  // koneksi database
+	$server = "localhost";
+	$user = "root";
+	$pass = "";
+	$database =	"tugasgit-pi";
+
+	$koneksi =	mysqli_connect($server, $user, $pass, $database)or die(mysqli_error($koneksi));
+
+	// jika tombol simpan di klik
+	if(isset($_POST['bsimpan']))
+	{
+		// pengujian apakah data akan diedit atau disimpan baru
+		if($_GET['hal'] == "edit")
+		{
+			 // Data akan diedit
+				$edit = mysqli_query($koneksi, " UPDATE tmhs set
+												nim = '$_POST[tnim]',
+												nama = '$_POST[tnama]',
+												alamat = '$_POST[talamat]',
+												prodi = '$_POST[tprodi]'
+												WHERE id_mhs = '$_GET[id]'
+											   ");
+			if($edit) //jika edit sukses
+			{
+				echo "<script>
+						alert('edit data sukses!');
+						document.location='index.php';
+					</script>";
+			}
+			else
+			{
+				echo "<script>
+						alert('edit data GAGAL!!');
+						document.location='index.php';
+					</script>";
+			}	
+		}
+		else
+		{
+			// data akan disimpan baru
+				$simpan = mysqli_query($koneksi, "INSERT INTO tmhs (nim, nama, alamat, prodi)
+											VALUES ('$_POST[tnim]',
+											 '$_POST[tnama]', 
+											 '$_POST[talamat]',
+											  '$_POST[tprodi]')
+											");
+			if($simpan) //jika simpan sukses
+			{
+				echo "<script>
+						alert('Simpan data sukses!');
+						document.location='index.php';
+					</script>";
+			}
+			else
+			{
+				echo "<script>
+						alert('Simpan data GAGAL!!');
+						document.location='index.php';
+					</script>";
+			}	
+		}
+
+
+		
+	}
+
+
+// pengujian jika tombol edit atau hapus di klik
+	if(isset($GET['hal']))
+	{
+		 // pengujian jika edit data
+		if($_GET['hal'] == "edit")
+		{
+			// tampilkan data yang akan edit
+			$tampil = mysqli_query($koneksi, "SELECT * FROM tmhs WHERE id_mhs = '$_GET[id]' ");
+			$data = mysqli_fetch_array($tampil);
+			if($data)
+			{
+				// jika data ditemukan, maka data ditampung dulu ke dalam variabel
+				$vnim = $data['nim'];
+				$vnama = $data['nama'];
+				$valamat = $data['alamat'];
+				$vprodi = $data['prodi'];
+			}
+		}
+		else if($_GET['hal'] == "hapus")
+		{
+			// persiapan hapus data
+			$hapus = mysqli_query($koneksi, "DELETE FROM tmhs WHERE id_mhs = '$_GET[id]' ");
+			if($hapus){
+				echo "<script>
+						alert('Hapus data sukses!!');
+						document.location='index.php';
+					</script>";
+			}
+		}
+	}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
